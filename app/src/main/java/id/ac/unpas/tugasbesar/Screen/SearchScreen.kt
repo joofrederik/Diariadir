@@ -24,19 +24,7 @@ import androidx.compose.ui.unit.sp
 import id.ac.unpas.tugasbesar.Component.BottomBar
 import id.ac.unpas.tugasbesar.R
 import id.ac.unpas.tugasbesar.ui.theme.BluePrimary
-import id.ac.unpas.tugasbesar.ui.theme.BlueSecondary
-import id.ac.unpas.tugasbesar.ui.theme.BlueLight
-import id.ac.unpas.tugasbesar.ui.theme.BlueVeryLight
-
-data class Story(
-    val title: String,
-    val author: String,
-    val imageRes: Int,
-    val views: String,
-    val likes: String,
-    val tags: List<String>,
-    val genre: String
-)
+import id.ac.unpas.tugasbesar.model.Story
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +32,8 @@ fun SearchScreen(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     initialGenre: String = "Romansa",
-    onGenreSelected: (String) -> Unit = {}
+    onGenreSelected: (String) -> Unit = {},
+    onStoryClick: (Story) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     var selectedGenre by remember { mutableStateOf(initialGenre) }
@@ -53,27 +42,32 @@ fun SearchScreen(
         Story(
             "Kembalinya Nona Muda (End)", "seeyoulea",
             R.drawable.ic_launcher_foreground,
-            "2,28 Jt", "115", listOf("aksi", "fantasi", "romansa"), "Romansa"
+            "2,28 Jt", "115", listOf("aksi", "fantasi", "romansa"), "Romansa",
+            rating = 4.7
         ),
         Story(
             "Softer than Summer Night", "scrluv",
             R.drawable.ic_launcher_foreground,
-            "3,23 Jt", "44", listOf("adult", "cinta", "cintasama"), "Romansa"
+            "3,23 Jt", "44", listOf("adult", "cinta", "cintasama"), "Romansa",
+            rating = 3.7
         ),
         Story(
             "Meraih Cinta Suamiku", "Mamaalva",
             R.drawable.ic_launcher_foreground,
-            "932 Rb", "38", listOf("abdi", "airmata", "anggota"), "Romansa"
+            "932 Rb", "38", listOf("abdi", "airmata", "anggota"), "Romansa",
+            rating = 3.0
         ),
         Story(
             "Love Under The Galaxy (TAMAT)", "Zeanisa_",
             R.drawable.ic_launcher_foreground,
-            "14,5 Rb", "26", listOf("anfight", "chicklit", "comedi"), "Fantasi"
+            "14,5 Rb", "26", listOf("anfight", "chicklit", "comedi"), "Fantasi",
+            rating = 4.8
         ),
         Story(
             "Wild Cousin (21+)", "voltasée",
             R.drawable.ic_launcher_foreground,
-            "2,57 Jt", "16", listOf("dewasa", "romansa"), "Horor"
+            "2,57 Jt", "16", listOf("dewasa", "romansa"), "Horor",
+            rating = 4.0
         )
     )
 
@@ -116,7 +110,7 @@ fun SearchScreen(
                 },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color(0xFF292929),
-                    focusedBorderColor = BluePrimary, // Ganti dari oren ke biru
+                    focusedBorderColor = BluePrimary,
                     unfocusedContainerColor = Color(0xFF292929),
                     focusedContainerColor = Color(0xFF292929),
                     cursorColor = Color.White,
@@ -133,7 +127,7 @@ fun SearchScreen(
                     val isSelected = selectedGenre == genre
                     Text(
                         text = genre,
-                        color = if (isSelected) BluePrimary else Color.White, // Ganti dari oren ke biru
+                        color = if (isSelected) BluePrimary else Color.White,
                         fontSize = 16.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         modifier = Modifier
@@ -159,7 +153,10 @@ fun SearchScreen(
                     .padding(horizontal = 8.dp)
             ) {
                 items(filteredStories) { story ->
-                    StorySearchItem(story)
+                    StorySearchItem(
+                        story = story,
+                        onClick = { onStoryClick(story) } // <-- Diteruskan ke item
+                    )
                     HorizontalDivider(color = Color(0xFF222222), thickness = 1.dp)
                 }
             }
@@ -168,10 +165,11 @@ fun SearchScreen(
 }
 
 @Composable
-fun StorySearchItem(story: Story) {
+fun StorySearchItem(story: Story, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable { onClick() } // <-- Ini penting, klik item!
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.Top
     ) {
@@ -225,7 +223,10 @@ fun StorySearchItem(story: Story) {
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }
-            Row(modifier = Modifier.padding(top = 4.dp)) {
+            Row(
+                modifier = Modifier.padding(top = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 story.tags.take(3).forEach {
                     Box(
                         modifier = Modifier
