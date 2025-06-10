@@ -1,5 +1,3 @@
-// File: MainActivity.kt
-//unfinished file
 package id.ac.unpas.tugasbesar.Screen
 
 import androidx.compose.foundation.background
@@ -21,24 +19,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BookApp {
+            Diariadir {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BookApp()
+                    Diariadir()
                 }
             }
         }
     }
 }
 
-class BookApp(fun: () -> Unit) {
+class Diariadir(fun: () -> Unit) {
 
 }
 
 @Composable
-fun BookApp() {
+fun Diariadir() {
     // Daftar semua buku
     val books = remember {
         listOf(
