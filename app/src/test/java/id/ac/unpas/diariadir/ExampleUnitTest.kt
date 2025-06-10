@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar
+package id.ac.unpas.diariadir
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.ui.theme
+package id.ac.unpas.diariadir.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

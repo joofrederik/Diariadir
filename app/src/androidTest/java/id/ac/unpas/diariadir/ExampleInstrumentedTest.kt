@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar
+package id.ac.unpas.diariadir
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

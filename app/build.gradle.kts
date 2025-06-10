@@ -1,15 +1,26 @@
+// Impor dotenv
+import io.github.cdimascio.dotenv.dotenv
+
+// Baca .env file
+val dotenv = dotenv {
+    directory = rootProject.projectDir.absolutePath
+    ignoreIfMissing = true
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
+val bundleId = "id.ac.unpas.diariadir"
+
 android {
-    namespace = "id.ac.unpas.tugasbesar"
+    namespace = bundleId
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "id.ac.unpas.tugasbesar"
+        applicationId = bundleId
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -19,7 +30,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_URL", "\"${dotenv["API_URL_DEBUG"] ?: "https://api-dev.example.com/v1/"}\"")
+        }
         release {
+            buildConfigField("String", "API_URL", "\"${dotenv["API_URL_RELEASE"] ?: "https://api.example.com/v1/"}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -36,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -60,5 +76,6 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.6.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation ("com.google.code.gson:gson:2.10.1")
-
+    implementation ("com.squareup.retrofit2:retrofit:2.6.2")
+    implementation ("com.squareup.retrofit:converter-gson:2.0.0-beta2")
 }

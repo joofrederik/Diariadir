@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.model
+package id.ac.unpas.diariadir.data.local.entity
 
 data class Story(
     val title: String,

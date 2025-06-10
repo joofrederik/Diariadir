@@ -1,17 +1,15 @@
-package id.ac.unpas.tugasbesar.Screen
+package id.ac.unpas.diariadir.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
@@ -26,8 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import id.ac.unpas.tugasbesar.R
-import id.ac.unpas.tugasbesar.model.Story
+import id.ac.unpas.diariadir.data.local.entity.Story
 import androidx.compose.foundation.verticalScroll
 
 // Data class untuk review user
@@ -83,7 +80,7 @@ fun ReviewBukuScreen(
             ) {
                 IconButton(onClick = { onBack() }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = "Kembali",
                         tint = Color.White,
                         modifier = Modifier.size(30.dp)
@@ -367,7 +364,7 @@ fun ReviewBukuScreen(
                             )
                         }
                     }
-                    Divider(color = Color(0xFF232323), thickness = 1.dp)
+                    HorizontalDivider(color = Color(0xFF232323), thickness = 1.dp)
                 }
             }
 

@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.Component
+package id.ac.unpas.diariadir.ui.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite

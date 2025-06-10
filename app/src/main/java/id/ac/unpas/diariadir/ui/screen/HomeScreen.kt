@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.Screen
+package id.ac.unpas.diariadir.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,9 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import id.ac.unpas.tugasbesar.Component.BottomBar
-import id.ac.unpas.tugasbesar.model.Story
-import id.ac.unpas.tugasbesar.R
+import id.ac.unpas.diariadir.ui.component.BottomBar
+import id.ac.unpas.diariadir.data.local.entity.Story
+import id.ac.unpas.diariadir.R
 
 // Biru untuk judul Diariadir
 val BluePrimary = Color(0xFF1976D2)

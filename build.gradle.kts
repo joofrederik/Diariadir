@@ -4,3 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 }
+
+buildscript {
+    dependencies {
+        // ...existing code...
+        classpath("io.github.cdimascio:dotenv-kotlin:6.4.1")
+    }
+}
