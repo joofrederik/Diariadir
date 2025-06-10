@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.Screen
+package id.ac.unpas.diariadir.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import id.ac.unpas.tugasbesar.viewmodel.RegisterViewModel
-import id.ac.unpas.tugasbesar.viewmodel.RegisterState
+import id.ac.unpas.diariadir.viewmodel.RegisterViewModel
+import id.ac.unpas.diariadir.viewmodel.RegisterState
 
 @Composable
 fun RegisterScreen(

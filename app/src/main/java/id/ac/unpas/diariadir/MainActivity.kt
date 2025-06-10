@@ -1,6 +1,5 @@
-package id.ac.unpas.tugasbesar
+package id.ac.unpas.diariadir
 
-import androidx.navigation.NavType
 import com.google.gson.Gson
 import android.net.Uri
 import android.os.Bundle
@@ -8,19 +7,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.*
 import androidx.navigation.compose.rememberNavController
-import id.ac.unpas.tugasbesar.ui.theme.TugasBesarTheme
-import id.ac.unpas.tugasbesar.Screen.HomeScreen
-import id.ac.unpas.tugasbesar.Screen.LoginScreen
-import id.ac.unpas.tugasbesar.Screen.RegisterScreen
-import id.ac.unpas.tugasbesar.Screen.SearchScreen
-import id.ac.unpas.tugasbesar.Screen.ReviewBukuScreen
-import id.ac.unpas.tugasbesar.Screen.ProfileScreen
-import id.ac.unpas.tugasbesar.model.Story
+import id.ac.unpas.diariadir.ui.theme.TugasBesarTheme
+import id.ac.unpas.diariadir.ui.screen.HomeScreen
+import id.ac.unpas.diariadir.ui.screen.LoginScreen
+import id.ac.unpas.diariadir.ui.screen.RegisterScreen
+import id.ac.unpas.diariadir.ui.screen.SearchScreen
+import id.ac.unpas.diariadir.ui.screen.ReviewBukuScreen
+import id.ac.unpas.diariadir.ui.screen.ProfileScreen
+import id.ac.unpas.diariadir.data.local.entity.Story
 
 
 class MainActivity : ComponentActivity() {

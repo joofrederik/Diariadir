@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.viewmodel
+package id.ac.unpas.diariadir.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

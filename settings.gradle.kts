@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TugasBesar"
+rootProject.name = "Diariadir"
 include(":app")
  

@@ -1,4 +1,4 @@
-package id.ac.unpas.tugasbesar.Screen
+package id.ac.unpas.diariadir.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
