@@ -22,6 +22,7 @@ import id.ac.unpas.diariadir.data.local.entity.Story
 import id.ac.unpas.diariadir.ui.screen.*
 import id.ac.unpas.diariadir.ui.theme.TugasBesarTheme
 import id.ac.unpas.diariadir.viewmodel.HomeViewModel
+import id.ac.unpas.diariadir.data.local.entity.Story
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,26 @@ fun MyApp() {
         navController.currentBackStackEntryFlow.collect { backStackEntry ->
             val currentRoute = backStackEntry.destination.route?.split("/")?.first()
             selectedTab = when (currentRoute) {
+
+    // FAVORIT STATE GLOBAL
+    val favoriteStories = remember { mutableStateListOf<Story>() }
+
+    fun toggleFavorite(story: Story) {
+        if (favoriteStories.any { it.title == story.title && it.author == story.author }) {
+            favoriteStories.removeAll { it.title == story.title && it.author == story.author }
+        } else {
+            favoriteStories.add(story)
+        }
+    }
+
+    fun isFavorite(story: Story): Boolean {
+        return favoriteStories.any { it.title == story.title && it.author == story.author }
+    }
+
+    // Sinkronkan selectedTab dengan route
+    LaunchedEffect(navController.currentBackStackEntryFlow) {
+        navController.currentBackStackEntryFlow.collect { entry ->
+            selectedTab = when (entry.destination.route) {
                 "home" -> 0
                 "search" -> 1
                 "favorit" -> 2
@@ -116,6 +137,16 @@ fun MyApp() {
                 selectedTab = selectedTab,
                 onTabSelected = onTabSelected,
                 onGenreClicked = { genre -> navController.navigate("search/$genre") },
+                onTabSelected = { tabIndex ->
+                    when (tabIndex) {
+                        0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
+                        1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
+                    }
+                },
+                onGenreClicked = { genre ->
+                    navController.navigate("search/$genre")
+                },
                 onStoryClick = { story ->
                     val storyJson = Uri.encode(Gson().toJson(story))
                     navController.navigate("reviewbuku/$storyJson")
@@ -124,12 +155,34 @@ fun MyApp() {
                 onLogoutClick = { navController.navigate("login") }
             )
         }
-
         composable("favorit") {
             FavoritScreen(
                 viewModel = favoritViewModel, // Memberikan ViewModel yang sama
                 selectedTab = selectedTab,
-                onTabSelected = onTabSelected,
+                onTabSelected = { tabIndex ->
+                    when (tabIndex) {
+                        0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
+                        1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
+                    }
+                },
+                onStoryClick = { story ->
+                    val storyJson = Uri.encode(Gson().toJson(story))
+                    navController.navigate("reviewbuku/$storyJson")
+                }
+            )
+        }
+        composable("search") {
+            SearchScreen(
+                selectedTab = selectedTab,
+                onTabSelected = { tabIndex ->
+                    when (tabIndex) {
+                        0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
+                        1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
+                    }
+                },
+                initialGenre = "Romansa",
                 onStoryClick = { story ->
                     val storyJson = Uri.encode(Gson().toJson(story))
                     navController.navigate("reviewbuku/$storyJson")
@@ -141,7 +194,13 @@ fun MyApp() {
             val genre = backStackEntry.arguments?.getString("genre") ?: "Romansa"
             SearchScreen(
                 selectedTab = selectedTab,
-                onTabSelected = onTabSelected,
+                onTabSelected = { tabIndex ->
+                    when (tabIndex) {
+                        0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
+                        1 -> if (navController.currentDestination?.route != "search/$genre") navController.navigate("search/$genre")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
+                    }
+                },
                 initialGenre = genre,
                 onStoryClick = { story ->
                     val storyJson = Uri.encode(Gson().toJson(story))

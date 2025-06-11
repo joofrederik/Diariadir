@@ -30,6 +30,7 @@ import id.ac.unpas.diariadir.viewmodel.HomeState
 import id.ac.unpas.diariadir.viewmodel.HomeViewModel
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel, // Menerima ViewModel
@@ -53,6 +54,64 @@ fun HomeScreen(
                 // Tampilkan loading indicator di tengah layar
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Color(0xFF181818))
+        ) {
+            item {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp, start = 16.dp, end = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Diariadir",
+                        color = BluePrimary,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontFamily = FontFamily.Cursive,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray.copy(alpha = 0.4f))
+                            .clickable { showProfileMenu = true },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profil",
+                            tint = Color.White,
+                            modifier = Modifier.size(26.dp)
+                        )
+                        DropdownMenu(
+                            expanded = showProfileMenu,
+                            onDismissRequest = { showProfileMenu = false },
+                            modifier = Modifier
+                                .width(170.dp)
+                                .background(Color.White)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Profile", color = Color.Black) },
+                                onClick = {
+                                    showProfileMenu = false
+                                    onProfileClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Logout", color = Color.Red) },
+                                onClick = {
+                                    showProfileMenu = false
+                                    onLogoutClick()
+                                }
+                            )
+                        }
+                    }
                 }
             }
             is HomeState.Success -> {

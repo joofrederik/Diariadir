@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -25,7 +26,6 @@ fun FavoritScreen(
     onStoryClick: (Story) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
     Scaffold(
         containerColor = Color(0xFF181818),
         bottomBar = {
@@ -68,7 +68,7 @@ fun FavoriteBookItem(story: Story, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 16.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }, // Card bisa diklik
         colors = CardDefaults.cardColors(containerColor = BluePrimary),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
