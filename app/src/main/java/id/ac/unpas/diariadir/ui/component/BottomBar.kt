@@ -7,8 +7,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-
-val BluePrimary = Color(0xFF1976D2)
+import id.ac.unpas.diariadir.ui.theme.BluePrimary // Gunakan import ini
 
 @Composable
 fun BottomBar(
@@ -42,7 +41,7 @@ fun BottomBar(
         )
         NavigationBarItem(
             selected = selectedIndex == 2,
-            onClick = { /* Tambahkan menu lain jika perlu */ },
+            onClick = { onTabSelected(2) },
             icon = {
                 Icon(
                     imageVector = Icons.Default.Favorite,

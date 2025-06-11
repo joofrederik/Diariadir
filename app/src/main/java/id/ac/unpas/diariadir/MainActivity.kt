@@ -17,8 +17,8 @@ import id.ac.unpas.diariadir.ui.screen.RegisterScreen
 import id.ac.unpas.diariadir.ui.screen.SearchScreen
 import id.ac.unpas.diariadir.ui.screen.ReviewBukuScreen
 import id.ac.unpas.diariadir.ui.screen.ProfileScreen
+import id.ac.unpas.diariadir.ui.screen.FavoritScreen
 import id.ac.unpas.diariadir.data.local.entity.Story
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +34,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
-    // State untuk tab yang aktif
     var selectedTab by remember { mutableStateOf(0) }
-    // untuk profile
     var currentUserName by remember { mutableStateOf("Nama Kamu") }
     var currentUserEmail by remember { mutableStateOf("email@domain.com") }
 
@@ -47,6 +45,7 @@ fun MyApp() {
                 "home" -> 0
                 "search/{genre}" -> 1
                 "search" -> 1
+                "favorit" -> 2
                 else -> 0
             }
         }
@@ -86,6 +85,7 @@ fun MyApp() {
                     when (tabIndex) {
                         0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
                         1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
                     }
                 },
                 onGenreClicked = { genre ->
@@ -99,7 +99,18 @@ fun MyApp() {
                 onLogoutClick = { navController.navigate("login") }
             )
         }
-
+        composable("favorit") {
+            FavoritScreen(
+                selectedTab = selectedTab,
+                onTabSelected = { tabIndex ->
+                    when (tabIndex) {
+                        0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
+                        1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
+                    }
+                }
+            )
+        }
         composable("search") {
             SearchScreen(
                 selectedTab = selectedTab,
@@ -107,6 +118,7 @@ fun MyApp() {
                     when (tabIndex) {
                         0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
                         1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
                     }
                 },
                 initialGenre = "Romansa",
@@ -124,6 +136,7 @@ fun MyApp() {
                     when (tabIndex) {
                         0 -> if (navController.currentDestination?.route != "home") navController.navigate("home")
                         1 -> if (navController.currentDestination?.route != "search/$genre") navController.navigate("search/$genre")
+                        2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
                     }
                 },
                 initialGenre = genre,
@@ -138,8 +151,8 @@ fun MyApp() {
             val story = Gson().fromJson(storyJson, Story::class.java)
             ReviewBukuScreen(
                 story,
-                onBack = { navController.popBackStack()
-            })
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
