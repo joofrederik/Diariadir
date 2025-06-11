@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import id.ac.unpas.diariadir.data.local.entity.Story
 import androidx.compose.foundation.verticalScroll
 
-// Data class untuk review user
 data class UserReview(
     val username: String,
     val rating: Int,
@@ -37,16 +36,16 @@ data class UserReview(
 @Composable
 fun ReviewBukuScreen(
     story: Story,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
     onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var isFavorite by remember { mutableStateOf(false) }
     val coverImage = story.imageRes
     val genres = story.tags
     val sinopsis = story.sinopsis
     val altTitle = story.altTitle ?: story.title
 
-    // Dummy awal untuk review (bisa diganti dengan data dari server/database)
     val reviewList = remember {
         mutableStateListOf(
             UserReview("Davina", 5, "Bagus banget bukunya!"),
@@ -56,7 +55,6 @@ fun ReviewBukuScreen(
     val bookRating: Double = if (reviewList.isNotEmpty()) reviewList.map { it.rating }.average() else 0.0
     val bookRatingCount = reviewList.size
 
-    // State untuk rating dan komentar yang diisi user
     var userRating by remember { mutableStateOf(0) }
     var userComment by remember { mutableStateOf("") }
 
@@ -71,7 +69,6 @@ fun ReviewBukuScreen(
                 .fillMaxWidth()
                 .padding(bottom = 64.dp)
         ) {
-            // Tombol kembali
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,7 +84,6 @@ fun ReviewBukuScreen(
                     )
                 }
             }
-            // --- COVER IMAGE ---
             Spacer(Modifier.height(24.dp))
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -103,7 +99,6 @@ fun ReviewBukuScreen(
                 )
             }
 
-            // --- RATING ---
             Spacer(Modifier.height(18.dp))
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -132,14 +127,13 @@ fun ReviewBukuScreen(
                 }
             }
 
-            // --- FAVORITE BUTTON ---
             Spacer(Modifier.height(14.dp))
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = { isFavorite = !isFavorite },
+                    onClick = onFavoriteClick,
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF232323),
@@ -152,24 +146,22 @@ fun ReviewBukuScreen(
                         tint = if (isFavorite) Color.Red else Color.Gray
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Tambahkan ke Favorit")
+                    Text(if (isFavorite) "Hapus dari Favorit" else "Tambahkan ke Favorit")
                 }
             }
 
-            // --- JUDUL ALTERNATIF ---
             Spacer(Modifier.height(18.dp))
             InfoSection(title = "Judul:", value = story.title)
             if (altTitle.isNotEmpty() && altTitle != story.title) {
                 InfoSection(title = "Judul Alternatif:", value = altTitle)
             }
 
-            // --- GENRE TAGS ---
             Spacer(Modifier.height(10.dp))
             Row(
                 Modifier
                     .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 genres.forEach { tag ->
                     Box(
@@ -183,7 +175,6 @@ fun ReviewBukuScreen(
                 }
             }
 
-            // --- SINOPSIS ---
             Spacer(Modifier.height(18.dp))
             Box(
                 modifier = Modifier
@@ -201,7 +192,6 @@ fun ReviewBukuScreen(
                 )
             }
 
-            // --- FORM: BERIKAN RATING DAN KOMENTAR ---
             Spacer(Modifier.height(22.dp))
             Text(
                 "Beri rating dan ulasan",
@@ -266,7 +256,6 @@ fun ReviewBukuScreen(
                 Text("Kirim")
             }
 
-            // --- RATING BESAR DAN JUMLAH ORANG YANG MENGISI KOMENTAR---
             Spacer(Modifier.height(26.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -303,7 +292,6 @@ fun ReviewBukuScreen(
                 )
             }
 
-            // --- ULASAN ORANG LAIN ---
             Text(
                 "Ulasan Pengguna",
                 color = Color.White,
@@ -323,7 +311,6 @@ fun ReviewBukuScreen(
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Avatar (inisial user)
                         Box(
                             modifier = Modifier
                                 .size(38.dp)
