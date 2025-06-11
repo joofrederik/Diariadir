@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 val bundleId = "id.ac.unpas.diariadir"
@@ -78,4 +80,8 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.retrofit2:retrofit:2.6.2")
     implementation ("com.squareup.retrofit:converter-gson:2.0.0-beta2")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Untuk ViewModel di Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2") // Untuk collectAsStateWithLifecycle
 }

@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,11 +19,13 @@ import id.ac.unpas.diariadir.ui.theme.BluePrimary
 
 @Composable
 fun FavoritScreen(
-    favoriteStories: List<Story>,
-    selectedTab: Int = 2,
-    onTabSelected: (Int) -> Unit = {},
-    onStoryClick: (Story) -> Unit = {} // Tambahkan ini!
+    modifier: Modifier = Modifier,
+    viewModel: FavoritViewModel, // Menerima ViewModel dari luar
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
+    onStoryClick: (Story) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         containerColor = Color(0xFF181818),
         bottomBar = {
@@ -29,7 +33,7 @@ fun FavoritScreen(
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(Color(0xFF181818))
@@ -41,15 +45,15 @@ fun FavoritScreen(
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
             )
 
-            if (favoriteStories.isEmpty()) {
+            if (uiState.favoriteStories.isEmpty()) {
                 Text(
                     text = "Belum ada buku favorit.",
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             } else {
-                LazyColumn {
-                    items(favoriteStories) { story ->
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(uiState.favoriteStories) { story ->
                         FavoriteBookItem(story = story, onClick = { onStoryClick(story) })
                     }
                 }
