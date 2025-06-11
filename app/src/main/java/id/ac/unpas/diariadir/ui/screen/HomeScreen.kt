@@ -25,9 +25,7 @@ import androidx.compose.ui.unit.sp
 import id.ac.unpas.diariadir.ui.component.BottomBar
 import id.ac.unpas.diariadir.data.local.entity.Story
 import id.ac.unpas.diariadir.R
-
-// Biru untuk judul Diariadir
-val BluePrimary = Color(0xFF1976D2)
+import id.ac.unpas.diariadir.ui.theme.BluePrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +75,7 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "Diariadir",
-                        color = BluePrimary, // tetap biru
+                        color = BluePrimary,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Cursive,
@@ -88,7 +86,7 @@ fun HomeScreen(
                             .size(38.dp)
                             .clip(CircleShape)
                             .background(Color.LightGray.copy(alpha = 0.4f))
-                            .clickable { showProfileMenu = true }, // <-- clickable!
+                            .clickable { showProfileMenu = true },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -172,17 +170,16 @@ data class BookCardData(
     val rating: Double = 0.0
 )
 
-// Tambahkan ekstensi ini di file yang sama!
 fun BookCardData.toStory(): Story = Story(
     title = this.title,
     author = this.author,
-    imageRes = R.drawable.ic_launcher_foreground, // Ganti jika punya gambar cover berbeda
+    imageRes = R.drawable.ic_launcher_foreground,
     views = "-",
     likes = "-",
     tags = listOf(this.tag),
     genre = this.tag,
     rating = this.rating,
-    sinopsis = "", // Bisa diisi jika ingin
+    sinopsis = "",
     altTitle = null
 )
 
@@ -199,13 +196,13 @@ fun BookCardLazyRow(books: List<BookCardData>, onBookClick: (BookCardData) -> Un
 }
 
 @Composable
-fun BookCard(book: BookCardData, onClick: () -> Unit) { // <-- Tambahkan parameter onClick
+fun BookCard(book: BookCardData, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .width(148.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Color(0xFF222222))
-            .clickable { onClick() } // <-- Tambahkan clickable
+            .clickable { onClick() }
             .padding(11.dp)
     ) {
         Column {
@@ -253,7 +250,6 @@ fun BookCard(book: BookCardData, onClick: () -> Unit) { // <-- Tambahkan paramet
                 )
             }
         }
-        // Rating badge pojok kanan bawah
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -275,8 +271,6 @@ fun BookCard(book: BookCardData, onClick: () -> Unit) { // <-- Tambahkan paramet
         }
     }
 }
-
-// --- JELAJAHI GENRE SECTION ---
 
 @Composable
 fun GenreRow(genres: List<String>, onGenreClicked: (String) -> Unit) {
