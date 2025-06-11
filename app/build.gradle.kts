@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" // Untuk Room
     id("kotlin-kapt") // Untuk Hilt
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 val bundleId = "id.ac.unpas.diariadir"
@@ -87,5 +89,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Untuk ViewModel di Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2") // Untuk collectAsStateWithLifecycle
 }

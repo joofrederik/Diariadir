@@ -28,6 +28,11 @@ import id.ac.unpas.diariadir.ui.component.BottomBar
 import id.ac.unpas.diariadir.data.local.entity.Story
 import id.ac.unpas.diariadir.data.local.DiariadirDB
 import id.ac.unpas.diariadir.data.local.entity.Book
+import id.ac.unpas.diariadir.R
+import id.ac.unpas.diariadir.ui.theme.BluePrimary
+import id.ac.unpas.diariadir.viewmodel.HomeState
+import id.ac.unpas.diariadir.viewmodel.HomeViewModel
+import java.util.Locale
 
 // Biru untuk judul Diariadir
 val BluePrimary = Color(0xFF1976D2)
@@ -35,6 +40,7 @@ val BluePrimary = Color(0xFF1976D2)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel, // Menerima ViewModel
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     onGenreClicked: (String) -> Unit,
@@ -68,11 +74,19 @@ fun HomeScreen(
     )*/
 
     var showProfileMenu by remember { mutableStateOf(false) }
+    // Mengumpulkan state dari ViewModel
+    val homeState by viewModel.homeState.collectAsState()
 
     Scaffold(
         containerColor = Color(0xFF181818),
         bottomBar = { BottomBar(selectedIndex = selectedTab, onTabSelected = onTabSelected) }
     ) { padding ->
+        // Tampilkan UI berdasarkan state
+        when (val state = homeState) {
+            is HomeState.Loading -> {
+                // Tampilkan loading indicator di tengah layar
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,7 +102,7 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "Diariadir",
-                        color = BluePrimary, // tetap biru
+                        color = BluePrimary,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = FontFamily.Cursive,
@@ -99,7 +113,7 @@ fun HomeScreen(
                             .size(38.dp)
                             .clip(CircleShape)
                             .background(Color.LightGray.copy(alpha = 0.4f))
-                            .clickable { showProfileMenu = true }, // <-- clickable!
+                            .clickable { showProfileMenu = true },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -148,23 +162,131 @@ fun HomeScreen(
                     books = instantBooks
                     //onBookClick = { book -> onStoryClick(book.toStory()) }
                 )
-            }
-            item { Spacer(Modifier.height(12.dp)) }
-            item {
-                Text(
-                    text = "Jelajahi genre",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 12.dp)
+            is HomeState.Success -> {
+                // Jika sukses, tampilkan data
+                HomeScreenContent(
+                    padding = padding,
+                    successState = state,
+                    onGenreClicked = onGenreClicked,
+                    onStoryClick = onStoryClick,
+                    onProfileClick = onProfileClick,
+                    onLogoutClick = onLogoutClick
                 )
             }
-            item { GenreRow(genres, onGenreClicked) }
-            item { Spacer(Modifier.height(24.dp)) }
+            is HomeState.Error -> {
+                // Jika error, tampilkan pesan error
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = state.message, color = Color.Red)
+                }
+            }
         }
     }
 }
 
+@Composable
+fun HomeScreenContent(
+    padding: PaddingValues,
+    successState: HomeState.Success,
+    onGenreClicked: (String) -> Unit,
+    onStoryClick: (Story) -> Unit,
+    onProfileClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
+    var showProfileMenu by remember { mutableStateOf(false) }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .background(Color(0xFF181818))
+    ) {
+        item {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, start = 16.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Diariadir",
+                    color = BluePrimary,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = FontFamily.Cursive,
+                    modifier = Modifier.weight(1f)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                        .clickable { showProfileMenu = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profil",
+                        tint = Color.White,
+                        modifier = Modifier.size(26.dp)
+                    )
+                    DropdownMenu(
+                        expanded = showProfileMenu,
+                        onDismissRequest = { showProfileMenu = false },
+                        modifier = Modifier
+                            .width(170.dp)
+                            .background(Color.White)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Profile", color = Color.Black) },
+                            onClick = {
+                                showProfileMenu = false
+                                onProfileClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Logout", color = Color.Red) },
+                            onClick = {
+                                showProfileMenu = false
+                                onLogoutClick()
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        item { Spacer(Modifier.height(8.dp)) }
+        item { SectionTitle("Pilihan terbaik untukmu") }
+        item {
+            BookCardLazyRow(
+                books = successState.recommendedBooks, // Menggunakan data dari state
+                onBookClick = { book -> onStoryClick(book.toStory()) }
+            )
+        }
+        item { Spacer(Modifier.height(12.dp)) }
+        item { SectionTitle("Direkomendasikan untukmu") }
+        item {
+            BookCardLazyRow(
+                books = successState.instantBooks, // Menggunakan data dari state
+                onBookClick = { book -> onStoryClick(book.toStory()) }
+            )
+        }
+        item { Spacer(Modifier.height(12.dp)) }
+        item {
+            Text(
+                text = "Jelajahi genre",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
+                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 12.dp)
+            )
+        }
+        item { GenreRow(successState.genres, onGenreClicked) } // Menggunakan data dari state
+        item { Spacer(Modifier.height(24.dp)) }
+    }
+}
+
+// ... (Sisa kode seperti SectionTitle, BookCardData, BookCardLazyRow, BookCard, GenreRow, GenreCard tetap sama)
+// ... (Pastikan semua fungsi helper tersebut ada di bawah sini)
 @Composable
 fun SectionTitle(title: String) {
     Text(
@@ -187,13 +309,13 @@ data class BookCardData(
 /*fun BookCardData.toStory(): Story = Story(
     title = this.title,
     author = this.author,
-    imageRes = R.drawable.ic_launcher_foreground, // Ganti jika punya gambar cover berbeda
+    imageRes = R.drawable.ic_launcher_foreground, // Placeholder image
     views = "-",
     likes = "-",
     tags = listOf(this.tag),
     genre = this.tag,
     rating = this.rating,
-    sinopsis = "", // Bisa diisi jika ingin
+    sinopsis = "Ini adalah sinopsis default. Ganti nanti.",
     altTitle = null
 )*/
 
@@ -216,7 +338,7 @@ fun BookCard(book: Book, onClick: () -> Unit) { // <-- Tambahkan parameter onCli
             .width(148.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Color(0xFF222222))
-            .clickable { onClick() } // <-- Tambahkan clickable
+            .clickable { onClick() }
             .padding(11.dp)
     ) {
         Column {
@@ -264,7 +386,6 @@ fun BookCard(book: Book, onClick: () -> Unit) { // <-- Tambahkan parameter onCli
                 )
             }
         }
-        // Rating badge pojok kanan bawah
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -278,7 +399,7 @@ fun BookCard(book: Book, onClick: () -> Unit) { // <-- Tambahkan parameter onCli
                 .padding(horizontal = 8.dp, vertical = 2.dp)
         ) {
             Text(
-                text = String.format("%.1f/5", 2.5f),
+                text = String.format(Locale.US, "%.1f/5", book.rating),
                 color = Color(0xFF222222),
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp
@@ -286,8 +407,6 @@ fun BookCard(book: Book, onClick: () -> Unit) { // <-- Tambahkan parameter onCli
         }
     }
 }
-
-// --- JELAJAHI GENRE SECTION ---
 
 @Composable
 fun GenreRow(genres: List<String>, onGenreClicked: (String) -> Unit) {
