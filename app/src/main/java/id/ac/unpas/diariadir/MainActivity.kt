@@ -38,6 +38,21 @@ fun MyApp() {
     var currentUserName by remember { mutableStateOf("Nama Kamu") }
     var currentUserEmail by remember { mutableStateOf("email@domain.com") }
 
+    // FAVORIT STATE GLOBAL
+    val favoriteStories = remember { mutableStateListOf<Story>() }
+
+    fun toggleFavorite(story: Story) {
+        if (favoriteStories.any { it.title == story.title && it.author == story.author }) {
+            favoriteStories.removeAll { it.title == story.title && it.author == story.author }
+        } else {
+            favoriteStories.add(story)
+        }
+    }
+
+    fun isFavorite(story: Story): Boolean {
+        return favoriteStories.any { it.title == story.title && it.author == story.author }
+    }
+
     // Sinkronkan selectedTab dengan route
     LaunchedEffect(navController.currentBackStackEntryFlow) {
         navController.currentBackStackEntryFlow.collect { entry ->
@@ -101,6 +116,7 @@ fun MyApp() {
         }
         composable("favorit") {
             FavoritScreen(
+                favoriteStories = favoriteStories,
                 selectedTab = selectedTab,
                 onTabSelected = { tabIndex ->
                     when (tabIndex) {
@@ -108,6 +124,10 @@ fun MyApp() {
                         1 -> if (navController.currentDestination?.route != "search") navController.navigate("search")
                         2 -> if (navController.currentDestination?.route != "favorit") navController.navigate("favorit")
                     }
+                },
+                onStoryClick = { story ->
+                    val storyJson = Uri.encode(Gson().toJson(story))
+                    navController.navigate("reviewbuku/$storyJson")
                 }
             )
         }
@@ -150,7 +170,9 @@ fun MyApp() {
             val storyJson = backStackEntry.arguments?.getString("story") ?: ""
             val story = Gson().fromJson(storyJson, Story::class.java)
             ReviewBukuScreen(
-                story,
+                story = story,
+                isFavorite = isFavorite(story),
+                onFavoriteClick = { toggleFavorite(story) },
                 onBack = { navController.popBackStack() }
             )
         }
