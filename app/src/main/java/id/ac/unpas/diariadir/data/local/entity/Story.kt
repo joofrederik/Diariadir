@@ -1,7 +1,11 @@
 package id.ac.unpas.diariadir.data.local.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity (tableName = "stories")
 data class Story(
-    val title: String,
+    @PrimaryKey val title: String,
     val author: String,
     val imageRes: Int,
     val views: String,

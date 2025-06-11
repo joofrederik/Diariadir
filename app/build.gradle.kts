@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22" // Untuk Room
+    id("kotlin-kapt") // Untuk Hilt
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
@@ -80,6 +82,13 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.retrofit2:retrofit:2.6.2")
     implementation ("com.squareup.retrofit:converter-gson:2.0.0-beta2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // Untuk ViewModel di Compose

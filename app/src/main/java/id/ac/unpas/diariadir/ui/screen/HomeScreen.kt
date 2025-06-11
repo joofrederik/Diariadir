@@ -17,18 +17,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import id.ac.unpas.diariadir.ui.component.BottomBar
 import id.ac.unpas.diariadir.data.local.entity.Story
+import id.ac.unpas.diariadir.data.local.DiariadirDB
+import id.ac.unpas.diariadir.data.local.entity.Book
 import id.ac.unpas.diariadir.R
 import id.ac.unpas.diariadir.ui.theme.BluePrimary
 import id.ac.unpas.diariadir.viewmodel.HomeState
 import id.ac.unpas.diariadir.viewmodel.HomeViewModel
 import java.util.Locale
+
+// Biru untuk judul Diariadir
+val BluePrimary = Color(0xFF1976D2)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +48,32 @@ fun HomeScreen(
     onProfileClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
+    val genres = listOf("Romansa", "Fantasi", "Horor")
+    /*val recommendedBooks = listOf(
+        BookCardData("Sayap Surgaku", "Mellyna Dhian", "Romansa", 4.8),
+        BookCardData("Fall Down", "Rekavaandrietta", "Fantasi", 4.2),
+        BookCardData("Bening dan Banyu", "MommieXYZ", "Horor", 3.9),
+        BookCardData("Atlein", "Angelina", "Romansa", 4.5),
+        BookCardData("Another Book", "Author X", "Fantasi", 4.1),
+        BookCardData("Book Example", "Author Y", "Horor", 3.7)
+    )*/
+    val db = Room.databaseBuilder(
+        LocalContext.current.applicationContext,
+        DiariadirDB::class.java, "diariadir"
+    ).allowMainThreadQueries().build()
+    val bookDao = db.bookDao()
+    val recommendedBooks: List<Book> = bookDao.getBooks()
+    val instantBooks: List<Book> = recommendedBooks
+
+    /*val instantBooks = listOf(
+        BookCardData("Bombshell", "Firefliesip", "Romansa", 4.6),
+        BookCardData("Play Date", "Reinsabila", "Fantasi", 4.0),
+        BookCardData("H...", "Penulis H...", "Horor", 3.8),
+        BookCardData("Second Chance", "Author B", "Romansa", 4.3),
+        BookCardData("Mystery Night", "Author C", "Fantasi", 4.7)
+    )*/
+
+    var showProfileMenu by remember { mutableStateOf(false) }
     // Mengumpulkan state dari ViewModel
     val homeState by viewModel.homeState.collectAsState()
 
@@ -114,6 +147,21 @@ fun HomeScreen(
                     }
                 }
             }
+            item { Spacer(Modifier.height(8.dp)) }
+            item { SectionTitle("Pilihan terbaik untukmu") }
+            item {
+                BookCardLazyRow(
+                    books = recommendedBooks
+                    //onBookClick = { book -> onStoryClick(book.toStory()) }
+                )
+            }
+            item { Spacer(Modifier.height(12.dp)) }
+            item { SectionTitle("Direkomendasikan untukmu") }
+            item {
+                BookCardLazyRow(
+                    books = instantBooks
+                    //onBookClick = { book -> onStoryClick(book.toStory()) }
+                )
             is HomeState.Success -> {
                 // Jika sukses, tampilkan data
                 HomeScreenContent(
@@ -257,7 +305,8 @@ data class BookCardData(
     val rating: Double = 0.0
 )
 
-fun BookCardData.toStory(): Story = Story(
+// Tambahkan ekstensi ini di file yang sama!
+/*fun BookCardData.toStory(): Story = Story(
     title = this.title,
     author = this.author,
     imageRes = R.drawable.ic_launcher_foreground, // Placeholder image
@@ -268,22 +317,22 @@ fun BookCardData.toStory(): Story = Story(
     rating = this.rating,
     sinopsis = "Ini adalah sinopsis default. Ganti nanti.",
     altTitle = null
-)
+)*/
 
 @Composable
-fun BookCardLazyRow(books: List<BookCardData>, onBookClick: (BookCardData) -> Unit) {
+fun BookCardLazyRow(books: List<Book>/*, onBookClick: (Book?) -> Unit?*/) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         items(books) { book ->
-            BookCard(book, onClick = { onBookClick(book) })
+            //BookCard(book, onClick = { onBookClick(book) })
         }
     }
 }
 
 @Composable
-fun BookCard(book: BookCardData, onClick: () -> Unit) {
+fun BookCard(book: Book, onClick: () -> Unit) { // <-- Tambahkan parameter onClick
     Box(
         modifier = Modifier
             .width(148.dp)
@@ -331,7 +380,7 @@ fun BookCard(book: BookCardData, onClick: () -> Unit) {
                     .padding(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Text(
-                    text = book.tag,
+                    text = book.genre,
                     color = Color.White,
                     fontSize = 11.sp
                 )

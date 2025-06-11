@@ -11,23 +11,23 @@ import id.ac.unpas.diariadir.data.local.entity.ReviewDetail
 
 interface ApiService {
     @GET("users")
-    fun getUserData(): Call<User>
+    suspend fun getUserData(): Call<User>
 
     @GET("books")
-    fun getBookData(): Call<Book>
+    suspend fun getBooksData(): Call<List<Book>>
 
     @GET("genres")
-    fun getGenreData(): Call<Genre>
+    suspend fun getGenreData(): Call<Genre>
 
     @GET("reviews")
-    fun getReviewData(): Call<Review>
+    suspend fun getReviewData(): Call<Review>
 
     @GET("review_details")
-    fun getReviewDetailData(): Call<ReviewDetail>
+    suspend fun getReviewDetailData(): Call<ReviewDetail>
 
     @POST("review_details")
-    fun addReviewDetailData(): Call<ReviewDetail>
+    suspend fun addReviewDetailData(): Call<ReviewDetail>
 
     @POST("users")
-    fun signIn(): Call<User>
+    suspend fun signIn(): Call<User>
 }
